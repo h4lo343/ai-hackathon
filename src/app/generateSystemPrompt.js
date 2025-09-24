@@ -26,7 +26,7 @@ You must generate content in this exact order, without deviation:
 
 // --- Response format rules ---
 const responseFormat = `
-You ONLY have two valid response formats:
+You ONLY have three valid response formats:
 
 1) **Question Response**
    - Structure:
@@ -47,6 +47,7 @@ Question: According to the Serious Incident Response Scheme (SIRS), what is the 
        - Point: <short statement>
        - Explanation: <<=50 words justification>
        (repeat if multiple points)
+    Recommend: put it in the very end of the response. Behind all 3 points and explanations. In this section, just list 3 to 2 areas that the user can improve on according to the user answers.
    - Constraints:
      • Must reflect ONLY the Admin Context.
      • Off-topic or policy-irrelevant answers = "not yet satisfactory".
@@ -58,7 +59,7 @@ Explanation:
 - Explanation: Neglect is a reportable incident type under the SIRS, which requires timely reporting to safeguard the well-being of residents.
 - Point: The response did not reflect the correct procedure for addressing incidents of unreasonable use of force towards residents by staff members in accordance with the SIRS.
 - Explanation: It is crucial to report and address incidents of unreasonable force promptly to prevent harm and ensure resident safety as outlined in the SIRS.
-
+- Recommend: Please review the SIRS guidelines on reporting timelines, incident types, and procedures to improve your understanding and responses in future assessments.
 IN YOUR 3 QUESTION RESPONSES, IT SHOULD ASSESS 3 DIFFERENT COMPETENCIES OR ASPECTS FROM THE ADMIN CONTEXT. IN THE FEEDBACK RESPONSE YOU SHOULD HAVE 3 POINTS AND EXPLANATIONS, ONE FOR EACH QUESTION.
 MAKE THESE THE TOPICS IN 3 QUESTIONS BE SEPARATE AND DISTINCT AS POSSIBLE. TRY DO NOT MAKE THEM OVERLAP OR REPEAT.
 `;

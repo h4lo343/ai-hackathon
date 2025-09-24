@@ -27,6 +27,7 @@ const ChatContainer = styled.div`
   flex-direction: column;
   height: 100%;
   gap: 1rem;
+  min-height: 0;
 `;
 
 const ContextSection = styled.div`
@@ -87,6 +88,7 @@ const ConversationSection = styled.div`
   border: 1px solid #e9ecef;
   border-radius: 12px;
   overflow: hidden;
+  min-height: 500px;
 `;
 
 const ConversationHeader = styled.div`
@@ -101,7 +103,7 @@ const ConversationArea = styled.div`
   overflow-y: auto;
   background-color: #ffffff;
   min-height: 300px;
-  max-height: 400px;
+  height: 400px;
 `;
 
 const Message = styled.div`
@@ -188,6 +190,7 @@ const FeedbackTable = styled.div`
   border: 1px solid #e9ecef;
   border-radius: 12px;
   overflow: hidden;
+  flex-shrink: 0;
 `;
 
 const TableHeader = styled.div`
@@ -265,6 +268,32 @@ const ExportButton = styled.button`
 const ExportIcon = styled.span`
   font-size: 1rem;
 `;
+
+const RecommendationSection = styled.div`
+  background-color: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  flex-shrink: 0;
+`;
+
+const RecommendationTitle = styled.h4`
+  margin: 0 0 0.5rem 0;
+  color: #0066cc;
+  font-size: 1rem;
+`;
+
+const RecommendationList = styled.ul`
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #333;
+`;
+
+const RecommendationItem = styled.li`
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+`;
 const CheckboxContainer = styled.div`
   display: flex;
   gap: 1rem;
@@ -329,10 +358,25 @@ export default function Home() {
         }
       }
       
+      // Extract recommendations
+      const recommendations = [];
+      const recommendationMatch = response.match(/recommend:\s*([^]*?)(?=result:|$)/i);
+      if (recommendationMatch) {
+        const recommendationText = recommendationMatch[1].trim();
+        // Split by bullet points, numbered lists, or line breaks
+        const recLines = recommendationText
+          .split(/[-•]\s*|\d+\.\s*|\n/)
+          .map(line => line.trim())
+          .filter(line => line && line.length > 0);
+        
+        recommendations.push(...recLines);
+      }
+      
       return {
         result,
         points,
         explanations,
+        recommendations,
         isSatisfactory: result === 'satisfactory'
       };
     }
@@ -360,6 +404,15 @@ export default function Home() {
         feedbackData.explanations[index] || 'No explanation provided'
       ]);
     });
+
+    // Add recommendations if they exist
+    if (feedbackData.recommendations && feedbackData.recommendations.length > 0) {
+      excelData.push(['', '']); // Empty row
+      excelData.push(['Recommendations', '']);
+      feedbackData.recommendations.forEach((rec, index) => {
+        excelData.push([`${index + 1}.`, rec]);
+      });
+    }
 
     // Create workbook and worksheet
     const wb = XLSX.utils.book_new();
@@ -639,6 +692,20 @@ export default function Home() {
               Export to Excel
             </ExportButton>
           </FeedbackTable>
+        )}
+
+        {/* Recommendation Section */}
+        {feedbackData && feedbackData.recommendations && feedbackData.recommendations.length > 0 && (
+          <RecommendationSection>
+            <RecommendationTitle>Recommendations:</RecommendationTitle>
+            <RecommendationList>
+              {feedbackData.recommendations.map((recommendation, index) => (
+                <RecommendationItem key={index}>
+                  {recommendation}
+                </RecommendationItem>
+              ))}
+            </RecommendationList>
+          </RecommendationSection>
         )}
       </ChatContainer>
     </Container>
